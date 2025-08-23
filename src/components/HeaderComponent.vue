@@ -94,8 +94,8 @@ onBeforeUnmount(() => {
                   ]"
               >
                 <span class="text-gray-500">{{ item.name }}</span>
-                <div class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                  PRONTO
+                <div class="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">
+                  Pronto
                 </div>
               </div>
 
