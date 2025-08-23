@@ -7,6 +7,36 @@ const open = ref(false)
 const panelRef = ref(null)
 const firstLinkRef = ref(null)
 
+// Array dinámico de items del menú
+const menuItems = ref([
+  { name: 'Inicio', href: '#', active: true },
+  { name: 'Proyectos', href: '#', active: false, hidden: true },
+  { name: 'Blog', href: '#', active: false, hidden: true },
+  { name: 'Registro', href: '#', active: false },
+])
+
+// Función para agregar item
+const addMenuItem = (item) => {
+  menuItems.value.push(item)
+}
+
+// Función para remover item
+const removeMenuItem = (index) => {
+  menuItems.value.splice(index, 1)
+}
+
+// Función para actualizar item
+const updateMenuItem = (index, updates) => {
+  menuItems.value[index] = { ...menuItems.value[index], ...updates }
+}
+
+// Función para marcar item como activo
+const setActiveItem = (index) => {
+  menuItems.value.forEach((item, i) => {
+    item.active = i === index
+  })
+}
+
 const openMenu = async () => {
   open.value = true
   await nextTick()
@@ -54,19 +84,50 @@ onBeforeUnmount(() => {
 
           <!-- Nav Desktop -->
           <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-            <a class="text-orange-400 hover:text-orange-300 transition-colors" href="#">Inicio</a>
-            <button
-                class="text-white hover:text-orange-300 transition-colors inline-flex items-center gap-1"
-                aria-haspopup="true"
-            >
-              Product
-              <svg class="w-4 h-4 transition-transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
-              </svg>
-            </button>
-            <a class="text-white hover:text-orange-300 transition-colors" href="#">Pricing</a>
-            <a class="text-white hover:text-orange-300 transition-colors" href="#">Blog</a>
-            <a class="text-white hover:text-orange-300 transition-colors" href="#">Company</a>
+            <template v-for="(item, index) in menuItems" :key="index">
+              <!-- Item oculto -->
+              <div
+                  v-if="item.hidden"
+                  :class="[
+                    'relative opacity-50 cursor-not-allowed',
+                    item.active ? 'text-orange-400' : 'text-white'
+                  ]"
+              >
+                <span class="text-gray-500">{{ item.name }}</span>
+                <div class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                  PRONTO
+                </div>
+              </div>
+
+              <!-- Link con dropdown -->
+              <button
+                  v-else-if="item.hasDropdown"
+                  :class="[
+                    'hover:text-orange-300 transition-colors inline-flex items-center gap-1',
+                    item.active ? 'text-orange-400' : 'text-white'
+                  ]"
+                  aria-haspopup="true"
+                  @click="setActiveItem(index)"
+              >
+                {{ item.name }}
+                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+                </svg>
+              </button>
+
+              <!-- Link normal -->
+              <a
+                  v-else
+                  :href="item.href"
+                  :class="[
+                    'hover:text-orange-300 transition-colors',
+                    item.active ? 'text-orange-400' : 'text-white'
+                  ]"
+                  @click="setActiveItem(index)"
+              >
+                {{ item.name }}
+              </a>
+            </template>
           </nav>
 
           <!-- Botón móvil -->
@@ -145,17 +206,32 @@ onBeforeUnmount(() => {
 
         <!-- Links -->
         <nav class="px-5 py-4 flex flex-col gap-3 text-base font-medium">
-          <a
-              ref="firstLinkRef"
-              href="#"
-              class="text-orange-300 bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/40"
-              @click="closeMenu"
-          >Inicio</a>
+          <template v-for="(item, index) in menuItems" :key="index">
+            <!-- Item oculto en móvil -->
+            <div
+                v-if="item.hidden"
+                class="relative opacity-50 cursor-not-allowed bg-gray-800/30 rounded-full py-2.5 px-4"
+            >
+              <span class="text-gray-500">{{ item.name }}</span>
+              <div class="absolute top-1 right-3 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                SOON
+              </div>
+            </div>
 
-          <a href="#" class="text-white bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/30" @click="closeMenu">Product</a>
-          <a href="#" class="text-white bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/30" @click="closeMenu">Pricing</a>
-          <a href="#" class="text-white bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/30" @click="closeMenu">Blog</a>
-          <a href="#" class="text-white bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/30" @click="closeMenu">Company</a>
+            <!-- Item normal en móvil -->
+            <a
+                v-else
+                :ref="index === 0 ? 'firstLinkRef' : undefined"
+                :href="item.href"
+                :class="[
+                  'bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/40',
+                  item.active ? 'text-orange-300 focus:ring-orange-400/40' : 'text-white focus:ring-orange-400/30'
+                ]"
+                @click="closeMenu(); setActiveItem(index)"
+            >
+              {{ item.name }}
+            </a>
+          </template>
         </nav>
 
         <!-- Footer drawer (opcional) -->
