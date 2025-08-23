@@ -1,0 +1,175 @@
+<script setup>
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import capsule from "@/assets/capsule.svg"
+import CapsuleIcon from "@/components/Icons/CapsuleIcon.vue";
+
+const open = ref(false)
+const panelRef = ref(null)
+const firstLinkRef = ref(null)
+
+const openMenu = async () => {
+  open.value = true
+  await nextTick()
+  firstLinkRef.value?.focus()
+}
+
+const closeMenu = () => {
+  open.value = false
+}
+
+const toggleMenu = () => (open.value ? closeMenu() : openMenu())
+
+// Bloquea scroll del body al abrir el panel
+watch(open, (v) => {
+  document.documentElement.style.overflow = v ? 'hidden' : ''
+})
+
+// Cerrar con ESC
+const onKeydown = (e) => {
+  if (e.key === 'Escape' && open.value) closeMenu()
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown)
+  document.documentElement.style.overflow = ''
+})
+</script>
+
+<template>
+  <header class="w-full px-4 mt-6">
+    <!-- Contenedor principal -->
+    <div class="max-w-[960px] mx-auto bg-gradient-to-b from-[#FF7A01] to-[#FF7A01]/0 rounded-full p-[1px]">
+      <div
+          class=" rounded-full bg-secondary
+             shadow-[0_0_40px_-12px_rgba(249,115,22,0.45)]
+             backdrop-blur-xl px-5 sm:pr-[35px] sm:pl-[15px]"
+      >
+        <div class="flex items-center h-[76px] justify-between py-3">
+          <!-- Logo -->
+          <a href="#" class="flex items-center gap-2">
+            <CapsuleIcon/>
+            <span class="text-white font-bold text-[16px] md:text-[20px] tracking-wide">CÁPSULAS IA</span>
+          </a>
+
+          <!-- Nav Desktop -->
+          <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+            <a class="text-orange-400 hover:text-orange-300 transition-colors" href="#">Inicio</a>
+            <button
+                class="text-white hover:text-orange-300 transition-colors inline-flex items-center gap-1"
+                aria-haspopup="true"
+            >
+              Product
+              <svg class="w-4 h-4 transition-transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+            <a class="text-white hover:text-orange-300 transition-colors" href="#">Pricing</a>
+            <a class="text-white hover:text-orange-300 transition-colors" href="#">Blog</a>
+            <a class="text-white hover:text-orange-300 transition-colors" href="#">Company</a>
+          </nav>
+
+          <!-- Botón móvil -->
+          <button
+              @click="toggleMenu"
+              class="md:hidden text-white p-2 rounded-full ring-1 ring-white/10 hover:ring-white/20 transition"
+              :aria-expanded="open"
+              aria-controls="mobile-drawer"
+              aria-label="Abrir menú"
+          >
+            <svg v-if="!open" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg v-else class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ===== Drawer móvil (derecha -> izquierda) ===== -->
+    <!-- Overlay -->
+    <Transition
+        enter-active-class="motion-safe:transition-opacity duration-300"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="motion-safe:transition-opacity duration-200"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+    >
+      <div
+          v-show="open"
+          class="fixed inset-0 z-40 bg-black/60 backdrop-blur-[2px]"
+          @click="closeMenu"
+          aria-hidden="true"
+      />
+    </Transition>
+
+    <!-- Panel -->
+    <Transition
+        enter-active-class="motion-safe:transition-transform duration-300 ease-out"
+        enter-from-class="translate-x-full"
+        enter-to-class="translate-x-0"
+        leave-active-class="motion-safe:transition-transform duration-200 ease-in"
+        leave-from-class="translate-x-0"
+        leave-to-class="translate-x-full"
+    >
+      <aside
+          v-show="open"
+          id="mobile-drawer"
+          ref="panelRef"
+          class="fixed top-0 right-0 z-50 h-screen w-[80%] max-w-sm
+               bg-black/90 border-l border-orange-500/30 backdrop-blur-xl
+               shadow-[0_0_40px_-12px_rgba(249,115,22,0.45)]"
+          role="dialog"
+          aria-modal="true"
+      >
+        <!-- Header drawer -->
+        <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+          <div class="flex items-center gap-1">
+            <CapsuleIcon/>
+            <span class="text-white font-bold text-[16px] md:text-[18px] tracking-wide">CÁPSULAS IA</span>
+          </div>
+          <button
+              @click="closeMenu"
+              class="text-white/90 hover:text-white rounded-full p-2 ring-1 ring-white/10 hover:ring-white/20 transition"
+              aria-label="Cerrar menú"
+          >
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Links -->
+        <nav class="px-5 py-4 flex flex-col gap-3 text-base font-medium">
+          <a
+              ref="firstLinkRef"
+              href="#"
+              class="text-orange-300 bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/40"
+              @click="closeMenu"
+          >Inicio</a>
+
+          <a href="#" class="text-white bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/30" @click="closeMenu">Product</a>
+          <a href="#" class="text-white bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/30" @click="closeMenu">Pricing</a>
+          <a href="#" class="text-white bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/30" @click="closeMenu">Blog</a>
+          <a href="#" class="text-white bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/30" @click="closeMenu">Company</a>
+        </nav>
+
+        <!-- Footer drawer (opcional) -->
+        <div class="mt-auto px-5 py-6 border-t border-white/10 text-white/60 text-sm">
+          © {{ new Date().getFullYear() }} Cápsulas IA · UCSS
+        </div>
+      </aside>
+    </Transition>
+  </header>
+</template>
+
+<style scoped>
+/* Glow extra en hover del contenedor principal */
+div:hover:is(.max-w-7xl){
+  box-shadow: 0 0 50px -18px rgba(249,115,22,.55);
+}
+</style>
