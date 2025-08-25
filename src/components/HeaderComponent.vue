@@ -12,7 +12,6 @@ const menuItems = ref([
   { name: 'Inicio', href: '#', active: true },
   { name: 'Proyectos', href: '#', active: false, hidden: true },
   { name: 'Blog', href: '#', active: false, hidden: true },
-  { name: 'Registro', href: '#', active: false },
 ])
 
 // Función para agregar item
@@ -79,7 +78,7 @@ onBeforeUnmount(() => {
           <!-- Logo -->
           <a href="#" class="flex items-center gap-2">
             <CapsuleIcon/>
-            <span class="text-white font-bold text-[16px] md:text-[20px] tracking-wide">CÁPSULAS IA</span>
+            <span class="text-white font-bold text-[16px] md:text-[20px] tracking-wide">LAB-IA</span>
           </a>
 
           <!-- Nav Desktop -->

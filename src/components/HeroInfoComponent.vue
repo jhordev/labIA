@@ -82,16 +82,9 @@ onMounted(() => {
           showButtons ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
         ]"
       >
-        <ButtonBase text="Inscribir grupo" variant="solid" />
+        <ButtonBase text="Inscríbete" variant="solid" link="https://forms.gle/4EUwFDoxa8qETVit7" />
       </div>
-      <div
-          :class="[
-          'transition-all duration-600 ease-out delay-150 hover:scale-105',
-          showButtons ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-        ]"
-      >
-        <ButtonBase text="Ver requisitos" variant="ghost" />
-      </div>
+
     </div>
   </section>
 </template>
