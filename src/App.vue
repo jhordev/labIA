@@ -119,7 +119,7 @@ onMounted(() => {
       ]"
     >
       <div class="w-[960px] max-w-[960px] flex justify-start">
-        <img class="hidden md:block" src="@/assets/ucss.png" alt="ucss"/>
+        <!--<img class="hidden md:block" src="@/assets/ucss.png" alt="ucss"/>-->
       </div>
     </footer>
   </div>

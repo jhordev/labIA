@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
           <!-- Logo -->
           <a href="#" class="flex items-center gap-2">
             <CapsuleIcon/>
-            <span class="text-white font-bold text-[16px] md:text-[20px] tracking-wide">LAB-IA</span>
+            <span class="text-white font-bold text-[16px] md:text-[20px] tracking-wide">LABORATORIO IA UCSS</span>
           </a>
 
           <!-- Nav Desktop -->
