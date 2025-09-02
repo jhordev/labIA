@@ -78,6 +78,7 @@ onBeforeUnmount(() => {
           <!-- Logo -->
           <a href="#" class="flex items-center gap-2">
             <CapsuleIcon/>
+            <!--    <img class="hidden md:block w-[50px]" src="@/assets/logo.svg" alt="ucss"/> -->
             <span class="text-white font-bold text-[16px] md:text-[20px] tracking-wide">LABORATORIO IA UCSS</span>
           </a>
 

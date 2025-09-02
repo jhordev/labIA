@@ -100,7 +100,7 @@ onMounted(() => {
           src="@/assets/robot_IA_png.png"
           alt="robot IA"
           :class="[
-          `w-[80vw] sm:w-[45vw] md:w-[40vw] lg:w-[45vw] xl:w-[60vw]
+          `w-[80vw] sm:w-[45vw] md:w-[40vw] lg:w-[45vw] xl:w-[50vw]
           max-w-[300px] sm:max-w-[350px] md:max-w-[480px] lg:max-w-[600px] xl:max-w-[900px]
           h-auto
           md:translate-x-[-15vw] lg:translate-x-[-12vw] xl:translate-x-[-6vw]
@@ -119,7 +119,7 @@ onMounted(() => {
       ]"
     >
       <div class="w-[960px] max-w-[960px] flex justify-start">
-        <!--<img class="hidden md:block" src="@/assets/ucss.png" alt="ucss"/>-->
+        <img class="hidden md:block w-[300px]" src="@/assets/lablogo.svg" alt="ucss"/>
       </div>
     </footer>
   </div>
