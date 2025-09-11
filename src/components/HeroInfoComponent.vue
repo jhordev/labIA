@@ -82,7 +82,7 @@ onMounted(() => {
           showButtons ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
         ]"
       >
-        <ButtonBase text="Enlace de inscripción" variant="solid" link="https://forms.gle/4EUwFDoxa8qETVit7" />
+        <ButtonBase text="Inscribe tu grupo" variant="solid" link="https://forms.gle/DHkCGWNTUbM2AbSC8" />
       </div>
 
     </div>
