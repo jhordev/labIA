@@ -1,18 +1,26 @@
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import capsule from "@/assets/capsule.svg"
 import CapsuleIcon from "@/components/Icons/CapsuleIcon.vue";
 
+const route = useRoute()
+const router = useRouter()
 const open = ref(false)
 const panelRef = ref(null)
 const firstLinkRef = ref(null)
 
 // Array dinámico de items del menú
 const menuItems = ref([
-  { name: 'Inicio', href: '#', active: true },
-  { name: 'Proyectos', href: '#', active: false, hidden: true },
-  { name: 'Blog', href: '#', active: false, hidden: true },
+  { name: 'Inicio', path: '/' },
+  { name: 'Proyectos', path: '/projects' },
+  { name: 'Blog', path: '/blog' },
 ])
+
+// Función para verificar si un item está activo
+const isActive = (path) => {
+  return route.path === path
+}
 
 // Función para agregar item
 const addMenuItem = (item) => {
@@ -29,11 +37,10 @@ const updateMenuItem = (index, updates) => {
   menuItems.value[index] = { ...menuItems.value[index], ...updates }
 }
 
-// Función para marcar item como activo
-const setActiveItem = (index) => {
-  menuItems.value.forEach((item, i) => {
-    item.active = i === index
-  })
+// Función para navegar
+const navigateTo = (path) => {
+  router.push(path)
+  closeMenu()
 }
 
 const openMenu = async () => {
@@ -76,11 +83,11 @@ onBeforeUnmount(() => {
       >
         <div class="flex items-center h-[76px] justify-between py-3">
           <!-- Logo -->
-          <a href="#" class="flex items-center gap-2">
+          <router-link to="/" class="flex items-center gap-2">
             <CapsuleIcon/>
             <!--    <img class="hidden md:block w-[50px]" src="@/assets/logo.svg" alt="ucss"/> -->
             <span class="text-white font-bold text-[16px] md:text-[20px] tracking-wide">LABORATORIO IA UCSS</span>
-          </a>
+          </router-link>
 
           <!-- Nav Desktop -->
           <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
@@ -90,7 +97,7 @@ onBeforeUnmount(() => {
                   v-if="item.hidden"
                   :class="[
                     'relative opacity-50 cursor-not-allowed',
-                    item.active ? 'text-orange-400' : 'text-white'
+                    isActive(item.path) ? 'text-orange-400' : 'text-white'
                   ]"
               >
                 <span class="text-gray-500">{{ item.name }}</span>
@@ -104,10 +111,9 @@ onBeforeUnmount(() => {
                   v-else-if="item.hasDropdown"
                   :class="[
                     'hover:text-orange-300 transition-colors inline-flex items-center gap-1',
-                    item.active ? 'text-orange-400' : 'text-white'
+                    isActive(item.path) ? 'text-orange-400' : 'text-white'
                   ]"
                   aria-haspopup="true"
-                  @click="setActiveItem(index)"
               >
                 {{ item.name }}
                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
@@ -116,17 +122,16 @@ onBeforeUnmount(() => {
               </button>
 
               <!-- Link normal -->
-              <a
+              <router-link
                   v-else
-                  :href="item.href"
+                  :to="item.path"
                   :class="[
                     'hover:text-orange-300 transition-colors',
-                    item.active ? 'text-orange-400' : 'text-white'
+                    isActive(item.path) ? 'text-orange-400' : 'text-white'
                   ]"
-                  @click="setActiveItem(index)"
               >
                 {{ item.name }}
-              </a>
+              </router-link>
             </template>
           </nav>
 
@@ -219,18 +224,18 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Item normal en móvil -->
-            <a
+            <router-link
                 v-else
                 :ref="index === 0 ? 'firstLinkRef' : undefined"
-                :href="item.href"
+                :to="item.path"
                 :class="[
                   'bg-white/5 hover:bg-white/10 rounded-full py-2.5 px-4 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400/40',
-                  item.active ? 'text-orange-300 focus:ring-orange-400/40' : 'text-white focus:ring-orange-400/30'
+                  isActive(item.path) ? 'text-orange-300 bg-white/10 focus:ring-orange-400/40' : 'text-white focus:ring-orange-400/30'
                 ]"
-                @click="closeMenu(); setActiveItem(index)"
+                @click="closeMenu()"
             >
               {{ item.name }}
-            </a>
+            </router-link>
           </template>
         </nav>
 
